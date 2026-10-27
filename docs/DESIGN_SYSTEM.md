@@ -19,3 +19,9 @@ Deploy automático somente dos arquivos site/*; usa localStorage, sem backend. N
 Testa CRUD, persistência após reload, responsividade e ausência de overflow em 390/768/1366/1600px.
 ## Refinamento de QA e dados
 Botões secundários para exportação CSV e importação JSON validada; foco visível no seletor de arquivo, mensagens acessíveis no painel, sem dependências externas. Registros inseridos por APIs de texto do DOM para evitar execução de HTML fornecido pelo usuário.
+
+## Testes de regressão ampliados
+- Tabela: ações com nome acessível individualizado por número da ordem.
+- Edição, atualização de status, busca, filtros, exclusão confirmada, exportação CSV e rejeição de backup JSON inválido.
+- Persistência local após recarregar, console sem erros e viewport sem overflow em 320/390/768/1024/1366/1600.
+- CSS: tokens de raio e foco, alvos de toque responsivos e etiquetas de status legíveis.
