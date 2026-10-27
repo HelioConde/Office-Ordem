@@ -1,6 +1,10 @@
 (()=>{"use strict";
 const STORAGE="office-ordem-demo-v1",statuses=["Aberta","Em andamento","Concluída"],sample=()=>[{id:1,client:"Cliente exemplo",device:"Notebook",service:"Revisão de desempenho e limpeza",price:180,status:"Em andamento",date:"2026-10-27"},{id:2,client:"Pessoa fictícia",device:"Impressora",service:"Diagnóstico e ajuste de alimentação de papel",price:75,status:"Aberta",date:"2026-10-27"}];
-let data;try{const saved=JSON.parse(localStorage.getItem(STORAGE));data=Array.isArray(saved)?saved:sample()}catch{data=sample()}
+let data;try{
+ const saved=JSON.parse(localStorage.getItem(STORAGE));
+ data=Array.isArray(saved)&&saved.length<=500&&saved.every(validBackupItem)&&
+   new Set(saved.map(item=>item.id)).size===saved.length?saved:sample();
+}catch{data=sample()}
 let editing=null;
 const q=s=>document.querySelector(s),make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const alert=m=>q("#alert").textContent=m;

@@ -49,6 +49,18 @@ const server=spawn('python3',['-m','http.server','8733','--bind','127.0.0.1','--
    // File.text() é assíncrono: aguardar o feedback antes de verificar o resultado.
    await page.waitForFunction(()=>document.querySelector('#alert')?.textContent?.includes('incompatível'),{timeout:5000});
    assert.match(await page.locator('#alert').innerText(),/incompatível/i,width+': importação inválida não bloqueada');
+
+   page.once('dialog',dialog=>dialog.accept());
+   await page.locator('#import').setInputFiles({
+     name:'backup-valido.json',mimeType:'application/json',
+     buffer:Buffer.from(JSON.stringify([{id:42,client:'Backup QA',device:'Desktop',service:'Teste importado',price:48,status:'Concluída',date:'2026-10-27'}]))
+   });
+   await page.locator('#orders tr').filter({hasText:'Backup QA'}).waitFor();
+   await page.reload();
+   assert.equal(await page.locator('#orders tr').filter({hasText:'Backup QA'}).count(),1,width+': backup válido não persistiu');
+   await page.evaluate(()=>localStorage.setItem('office-ordem-demo-v1','[{"malformed":true}]'));
+   await page.reload();
+   assert.equal(await page.locator('#total').textContent(),'2',width+': dados locais corrompidos devem restaurar exemplos fictícios');
    await page.close();
   }
   console.log('Playwright aprovado: CRUD completo, status, filtros, persistência, CSV, backup inválido, 6 resoluções.');
