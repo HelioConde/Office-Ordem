@@ -82,9 +82,11 @@ async function run() {
         const csv = readFileSync(await download.path(), 'utf8');
         ensure(csv.includes(label), 'CSV nao contem ordem gerada');
 
+        await page.locator('#search').fill('');
         const backup = [{id:901,client:'=2+2',device:'Computador de teste',service:'Entrada de backup validada',price:150,status:'Aberta',date:'2026-10-27'}];
         page.once('dialog', dialog => dialog.accept());
         await page.locator('#import').setInputFiles({name:'backup-teste.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});
+        await page.locator('#orders tr').filter({hasText:'=2+2'}).waitFor({state:'visible'});
         ensure(await page.locator('#orders tr').filter({hasText:'=2+2'}).count() === 1, 'Importacao JSON nao funcionou');
         await page.reload({waitUntil:'domcontentloaded'});
         ensure(await page.locator('#orders tr').filter({hasText:'=2+2'}).count() === 1, 'Backup nao persistiu');
@@ -95,6 +97,7 @@ async function run() {
         ensure(csvText.includes("'=2+2"), 'CSV nao neutraliza prefixo de formula');
         const invalid = [{id:902,client:'',device:'X',service:'Y',price:1,status:'Aberta',date:'2026-10-27'}];
         await page.locator('#import').setInputFiles({name:'backup-invalido.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
+        await page.waitForFunction(() => document.querySelector('#alert')?.textContent?.includes('incompatível'));
         ensure((await page.locator('#alert').innerText()).includes('incompatível'), 'Backup invalido nao rejeitado');
         ensure(await page.locator('#orders tr').filter({hasText:'=2+2'}).count() === 1, 'Backup invalido sobrescreveu dados');
         await screenshot(page, width, 'importacao');
