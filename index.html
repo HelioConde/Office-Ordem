@@ -1,1 +1,61 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="/logo192.png"/><link rel="manifest" href="/manifest.json"/><title>React App</title><script defer="defer" src="/static/js/main.8a9ab05c.js"></script><link href="/static/css/main.5dd87952.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#102a43" />
+  <meta name="description" content="Office Ordem: demonstração de ordens de serviço com armazenamento local, sem banco de dados ou servidor." />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="demo.css" />
+  <title>Office Ordem — Gestão de serviços</title>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="./" aria-label="Office Ordem, página inicial"><span class="brand-mark" aria-hidden="true">O</span><span>Office <strong>Ordem</strong><small>GESTÃO DE SERVIÇOS</small></span></a>
+      <span class="demo-chip">Demonstração local</span>
+    </div>
+  </header>
+  <main id="conteudo" class="container">
+    <section class="hero" aria-labelledby="page-title">
+      <div><p class="eyebrow">PAINEL DE CONTROLE</p><h1 id="page-title">Ordens de serviço</h1><p>Organize seus atendimentos em um só lugar, mesmo sem servidor. Os registros de demonstração ficam apenas neste navegador.</p></div>
+      <button type="button" class="button button-primary" id="new-order"><span aria-hidden="true">＋</span> Nova ordem</button>
+    </section>
+    <aside class="privacy-note" aria-label="Sobre os dados"><strong>Modo GitHub Pages:</strong> os registros não são enviados a nenhum servidor, não são sincronizados e podem ser apagados ao limpar os dados do navegador. Use somente informações fictícias, nunca dados pessoais de clientes.</aside>
+    <section class="stats" aria-label="Resumo das ordens">
+      <article class="stat"><span>Total de ordens</span><strong id="stat-total">0</strong></article>
+      <article class="stat"><span>Em andamento</span><strong id="stat-progress">0</strong></article>
+      <article class="stat"><span>Concluídas</span><strong id="stat-complete">0</strong></article>
+      <article class="stat"><span>Pendentes</span><strong id="stat-pending">0</strong></article>
+    </section>
+    <section class="orders-section" aria-labelledby="orders-title">
+      <div class="section-header"><div><p class="eyebrow">ACOMPANHAMENTO</p><h2 id="orders-title">Seus atendimentos</h2></div><span id="result-count" aria-live="polite"></span></div>
+      <div class="toolbar">
+        <label class="search-field"><span class="sr-only">Pesquisar ordens</span><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar por serviço ou responsável..." autocomplete="off" /></label>
+        <label class="select-field"><span class="sr-only">Filtrar por status</span><select id="filter"><option value="todos">Todos os status</option><option value="pendente">Pendente</option><option value="andamento">Em andamento</option><option value="concluida">Concluída</option></select></label>
+        <button class="button button-subtle" id="export" type="button">Exportar JSON</button>
+        <button class="button button-subtle danger-text" id="reset" type="button">Restaurar exemplo</button>
+      </div>
+      <div class="table-scroll"><table><caption class="sr-only">Lista de ordens de serviço</caption><thead><tr><th scope="col">Serviço</th><th scope="col">Responsável</th><th scope="col">Abertura</th><th scope="col">Status</th><th scope="col">Ações</th></tr></thead><tbody id="order-rows"></tbody></table></div>
+      <div id="empty" class="empty" hidden><span aria-hidden="true">▤</span><h3>Nenhuma ordem encontrada</h3><p>Altere a busca ou crie uma nova ordem.</p></div>
+    </section>
+  </main>
+  <footer class="footer"><span>Office Ordem · Projeto de demonstração — sem autenticação ou banco</span><a href="https://github.com/HelioConde/Office-Ordem" target="_blank" rel="noopener noreferrer">Repositório no GitHub ↗</a></footer>
+  <dialog id="order-dialog" aria-labelledby="form-title">
+    <form id="order-form">
+      <div class="dialog-head"><div><p class="eyebrow">REGISTRO LOCAL</p><h2 id="form-title">Nova ordem</h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Fechar formulário">✕</button></div>
+      <input type="hidden" id="order-id" />
+      <div class="form-body">
+        <label>Serviço <input name="title" id="title" required maxlength="90" placeholder="Ex.: Revisão de equipamento" /></label>
+        <label>Responsável <input name="owner" id="owner" required maxlength="60" placeholder="Ex.: Equipe de suporte" /></label>
+        <div class="form-grid"><label>Data de abertura <input name="opened" id="opened" type="date" required /></label><label>Status <select name="status" id="status"><option value="pendente">Pendente</option><option value="andamento">Em andamento</option><option value="concluida">Concluída</option></select></label></div>
+        <label>Descrição (opcional) <textarea name="description" id="description" maxlength="500" rows="3" placeholder="Observações sobre o serviço"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button class="button button-subtle" type="button" id="cancel">Cancelar</button><button class="button button-primary" type="submit">Salvar ordem</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="demo.js" defer></script>
+</body>
+</html>
