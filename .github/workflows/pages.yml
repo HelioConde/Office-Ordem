@@ -25,7 +25,7 @@ jobs:
           mkdir -p dist-pages
           cp site/index.html site/style.css site/app.js site/favicon.svg dist-pages/
           node --check site/app.js
-          node --test tests/smoke.cjs
+          node --test tests/smoke.cjs tests/pages-entry.cjs
           test "$(find dist-pages -type f | wc -l)" -eq 4
       - name: Capturas Playwright
         run: |
