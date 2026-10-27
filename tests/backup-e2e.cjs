@@ -45,8 +45,10 @@ async function scenario(width){
     await page.locator('#import').setInputFiles({name:'invalido.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
     await page.waitForFunction(()=>document.querySelector('#alert')?.textContent?.includes('incompatível'),null,{timeout:6000});
     assert.equal(await page.locator('#orders tr').filter({hasText:'=2+2'}).count(),1,'Backup inválido alterou dados salvos');
-    await page.locator('.skip').focus();
-    assert.equal(await page.locator('.skip').evaluate(el=>document.activeElement===el&&getComputedStyle(el).outlineStyle!=='none'),true,'Foco invisível no skip link');
+    // :focus-visible e intencionalmente acionado por teclado, nao por .focus() programatico.
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('.skip').evaluate(el=>document.activeElement===el&&getComputedStyle(el).outlineStyle!=='none'),true,'Foco invisível no skip link via teclado');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
     assert.ok(overflow<=2,'Overflow horizontal '+width+': '+overflow);
     assert.deepEqual(errors,[],'Erro de navegador');
