@@ -12,3 +12,6 @@ A versão antiga deste repositório contém **apenas um build histórico React**
 Abra `site/index.html` através de um servidor HTTP (por exemplo `python -m http.server 8000 --directory site`). O GitHub Actions tenta publicar só os quatro arquivos estáticos, dependendo da disponibilidade do Pages para este repositório privado.
 
 Consulte `docs/DESIGN_SYSTEM.md` para decisões visuais.
+## Entrada do GitHub Pages por branch
+
+Além da publicação recomendada por GitHub Actions, `index.html` na raiz agora carrega `./site/style.css`, `./site/app.js` e `./site/favicon.svg`, todos caminhos relativos. Isso evita tela branca quando o Pages está configurado para servir a raiz da branch `main` sob `/Office-Ordem/`. O build CRA antigo não é executado. Para publicar **somente** o aplicativo estático (e não arquivos históricos), selecione GitHub Actions em Settings → Pages.

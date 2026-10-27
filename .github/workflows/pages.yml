@@ -2,6 +2,8 @@ name: Office Ordem - Static Pages e QA
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,9 +26,11 @@ jobs:
           cp site/index.html site/style.css site/app.js site/favicon.svg dist-pages/
           node --check site/app.js
           test "$(find dist-pages -type f | wc -l)" -eq 4
+      - name: Validar entrada da raiz para Pages por branch
+        run: node --test tests/root-entry.test.mjs
       - name: Capturas Playwright
         run: |
-          npm install --no-save playwright
+          npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
           node tests/pages.cjs
       - uses: actions/upload-artifact@v4
@@ -36,6 +40,7 @@ jobs:
           path: screenshots/
           if-no-files-found: ignore
   deploy:
+    if: github.event_name == 'push'
     needs: qa
     runs-on: ubuntu-latest
     environment:
