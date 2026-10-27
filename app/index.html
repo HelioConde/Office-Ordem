@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#112139">
+  <meta name="description" content="Office Ordem: demonstração de ordens de serviço, com armazenamento local e exportação sem servidor.">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Office Ordem | Gestão local de ordens de serviço</title>
+  <script defer type="module" src="./app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Office Ordem, início"><span class="brand-mark" aria-hidden="true">O<span>O</span></span><span>Office <strong>Ordem</strong><small>Gestão inteligente</small></span></a>
+    <div class="topbar-actions"><span class="local-pill"><span aria-hidden="true" class="local-dot"></span> Modo local</span><a class="about-link" href="https://github.com/HelioConde/Office-Ordem" target="_blank" rel="noopener noreferrer">Sobre o projeto <span aria-hidden="true">↗</span></a></div>
+  </header>
+  <main id="main" class="main">
+    <div class="hero">
+      <div><p class="eyebrow">PAINEL DE CONTROLE <span aria-hidden="true">/</span> DEMONSTRAÇÃO</p><h1>Ordens de serviço</h1><p class="lead">Organize atendimentos, acompanhe prazos e mantenha suas informações sob controle, mesmo sem um servidor.</p></div>
+      <button class="button primary" id="new-order" type="button"><span aria-hidden="true">＋</span> Nova ordem</button>
+    </div>
+    <div class="privacy-banner" role="note"><span aria-hidden="true" class="privacy-icon">ⓘ</span><div><strong>Demonstração sem banco de dados</strong><p>Todos os registros ficam somente neste navegador. Os exemplos são fictícios; não use dados reais de clientes sem proteção adequada. Exporte um arquivo para fazer backup.</p></div></div>
+    <section class="metric-grid" aria-label="Resumo das ordens">
+      <div class="metric"><span class="metric-icon" aria-hidden="true">▤</span><span class="metric-name">Total de ordens</span><strong id="stat-total">0</strong><small>Registros neste navegador</small></div>
+      <div class="metric"><span class="metric-icon amber" aria-hidden="true">◷</span><span class="metric-name">Em andamento</span><strong id="stat-progress">0</strong><small>Aguardando conclusão</small></div>
+      <div class="metric"><span class="metric-icon green" aria-hidden="true">✓</span><span class="metric-name">Concluídas</span><strong id="stat-done">0</strong><small>Serviços finalizados</small></div>
+      <div class="metric"><span class="metric-icon blue" aria-hidden="true">R$</span><span class="metric-name">Valor em aberto</span><strong id="stat-value">R$ 0,00</strong><small>Pendentes e em andamento</small></div>
+    </section>
+    <section class="records" aria-labelledby="records-heading">
+      <div class="records-head"><div><p class="eyebrow">ACOMPANHAMENTO</p><h2 id="records-heading">Todas as ordens</h2><p id="result-count" class="result-count">Carregando…</p></div>
+        <div class="file-actions">
+          <button class="button soft" id="export-csv" type="button">Exportar CSV</button>
+          <button class="button soft" id="export-json" type="button">Backup JSON</button>
+          <label class="button soft import-button" for="import-json">Importar JSON<input id="import-json" type="file" accept=".json,application/json"></label>
+        </div>
+      </div>
+      <div class="filters">
+        <label class="search-field"><span class="sr-only">Buscar ordens</span><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar cliente, serviço ou número…" autocomplete="off"></label>
+        <label class="filter-field"><span class="sr-only">Filtrar situação</span><select id="status-filter"><option value="">Todas as situações</option><option>Pendente</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option></select></label>
+        <button class="button text-button" id="reset-filters" type="button">Limpar filtros</button>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Ordem</th><th scope="col">Cliente</th><th scope="col">Serviço</th><th scope="col">Prazo</th><th scope="col">Valor</th><th scope="col">Situação</th><th scope="col">Ações</th></tr></thead><tbody id="order-rows"></tbody></table><div id="empty-state" class="empty-state" hidden><div aria-hidden="true" class="empty-icon">▤</div><strong>Nenhuma ordem encontrada</strong><p>Altere os filtros ou crie uma ordem para começar.</p></div></div>
+    </section>
+    <p class="page-note">Os dados não são sincronizados entre dispositivos. Limpar os dados do navegador pode apagar as ordens locais.</p>
+  </main>
+  <footer>© Office Ordem · Projeto demonstrativo de Hélio Conde <span>Desenvolvido para GitHub Pages, sem backend</span></footer>
+</div>
+<dialog id="order-dialog" aria-labelledby="dialog-heading">
+  <form id="order-form" novalidate>
+    <div class="dialog-head"><div><p class="eyebrow">GESTÃO DE ATENDIMENTOS</p><h2 id="dialog-heading">Nova ordem</h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Fechar formulário">×</button></div>
+    <p class="form-hint">Campos com * são obrigatórios. Use apenas informações fictícias nesta demonstração.</p>
+    <div class="form-grid">
+      <label>Cliente *<input name="cliente" maxlength="80" autocomplete="off" required placeholder="Ex.: Cliente exemplo"></label>
+      <label>Serviço *<input name="servico" maxlength="120" required placeholder="Ex.: Revisão de equipamento"></label>
+      <label>Prazo *<input name="prazo" type="date" required></label>
+      <label>Valor (R$) *<input name="valor" type="number" min="0" max="99999999" step="0.01" required placeholder="0,00"></label>
+      <label>Situação *<select name="status" required><option>Pendente</option><option>Em andamento</option><option>Concluída</option><option>Cancelada</option></select></label>
+      <label class="full">Observações<textarea name="observacoes" rows="3" maxlength="500" placeholder="Detalhes do serviço (opcional)"></textarea></label>
+    </div>
+    <p id="form-error" class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions"><button class="button soft" id="cancel-dialog" type="button">Cancelar</button><button class="button primary" type="submit">Salvar ordem</button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
