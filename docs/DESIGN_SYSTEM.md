@@ -1,19 +1,19 @@
 # Office Ordem — Design System
 
-## Propósito
-Recriar a interface de ordens de serviço com código editável, sem depender do build React histórico nem banco de dados.
+## Identidade
+Dashboard compacto de ordens de serviço; superfícies azul-petróleo (#0e1c32) e destaque verde-menta (#7de0b6), sem alterar o caráter de aplicação administrativa.
 
 ## Taste Skill
-Espaçamentos 4/8/12/16/24/32px, verde menta #7de0b6 sobre azul petróleo escuro #0e1c32, cartões com bordas suaves.
+Tokens: espaçamentos 4/8/12/16/24/32 px em `site/style.css`. Componentes de cartões, botões primários/secundários, inputs, modal e estado vazio.
 
 ## Web Design Guidelines
-Skip link, labels, foco visível, tabela semântica, modal dialog, ações com confirmação, ausência de animações em reduced-motion.
+HTML semântico; link para pular ao conteúdo; campos com labels; contornos de foco; tabela com rolagem localizada; diálogo nativo; exclusão com confirmação; movimento reduzido. O app guarda somente dados da demonstração, sem rede.
 
-## Awesome Design e Image to Code
-Dashboard compacto com contadores, busca e filtros; CRUD e comprovante para impressão. Ícone geométrico original na marca.
+## Awesome Design
+Indicadores por status, busca, filtros e hierarquia entre ação primária (Nova ordem) e demais ações. Impressão e exportação JSON com mensagens de feedback.
 
-## GitHub Pages
-Deploy automático somente dos arquivos site/*; usa localStorage, sem backend. Nunca usar dados reais ou credenciais neste protótipo.
+## Image to Code
+O build histórico React não fornece fontes editáveis. A interface `site/` foi reconstruída com HTML, CSS e JavaScript independentes. Screenshots geradas no CI devem ser inspecionadas antes da homologação visual final.
 
-## Playwright
-Testa CRUD, persistência após reload, responsividade e ausência de overflow em 390/768/1366/1600px.
+## QA e publicação
+`.github/workflows/pages.yml` testa sintaxe, CRUD, persistência, foco, console e ausência de overflow em quatro resoluções. Preserva capturas e pacote estático mesmo quando o GitHub Pages do repositório privado não puder publicar. Só habilita deploy automaticamente em repositório público; ver instruções de privacidade no README.

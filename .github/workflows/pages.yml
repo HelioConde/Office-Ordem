@@ -1,6 +1,8 @@
-name: Office Ordem - Static Pages e QA
+name: Office Ordem - QA e pacote estático
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -8,8 +10,8 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: office-ordem-pages
-  cancel-in-progress: false
+  group: office-ordem-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   qa:
     runs-on: ubuntu-latest
@@ -18,24 +20,36 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Montar site estatico sem bundles legados
+      - name: Preparar site estatico sem bundles legados
         run: |
           mkdir -p dist-pages
           cp site/index.html site/style.css site/app.js site/favicon.svg dist-pages/
           node --check site/app.js
+          node --check tests/pages.cjs
           test "$(find dist-pages -type f | wc -l)" -eq 4
-      - name: Capturas Playwright
+      - name: Preparar Chromium
         run: |
-          npm install --no-save playwright
+          npm install --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium
-          node tests/pages.cjs
-      - uses: actions/upload-artifact@v4
+      - name: Playwright - CRUD, persistencia, acessibilidade e capturas
+        run: node tests/pages.cjs
+      - name: Salvar capturas e relatorio
         if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: office-ordem-screenshots
           path: screenshots/
-          if-no-files-found: ignore
+          if-no-files-found: warn
+      - name: Disponibilizar pacote estatico para download
+        uses: actions/upload-artifact@v4
+        with:
+          name: office-ordem-site-estatico
+          path: dist-pages/
   deploy:
+    # Publicar somente se o repositorio for publico e o evento nao for PR.
+    # A configuracao/elegibilidade do GitHub Pages em repositorios privados
+    # nao pode ser corrigida por um script de build.
+    if: github.event.repository.private == false && github.event_name != 'pull_request'
     needs: qa
     runs-on: ubuntu-latest
     environment:
@@ -43,14 +57,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Montar arquivos publicados
+      - name: Preparar arquivos
         run: |
           mkdir -p dist-pages
           cp site/index.html site/style.css site/app.js site/favicon.svg dist-pages/
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: dist-pages
       - id: deployment
