@@ -1,0 +1,44 @@
+name: Office Ordem - QA da demo docs
+
+on:
+  push:
+    branches: [feat/pages-static-demo-20261027]
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tests/visual-qa.mjs'
+      - '.github/workflows/qa-demo-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check static assets and syntax
+        run: |
+          test -f docs/index.html
+          test -f docs/styles.css
+          test -f docs/app.js
+          test -f docs/icon.svg
+          node --check docs/app.js
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Test local CRUD and capture five viewports
+        run: node tests/visual-qa.mjs
+      - name: Attach screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: office-ordem-docs-playwright
+          path: visual-qa/
+          retention-days: 14
