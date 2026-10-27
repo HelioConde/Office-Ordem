@@ -1,49 +1,22 @@
-<div align="center">
-  <h1>🧾 Office Ordem</h1>
-  <p><strong>Experimento de interface para ordens de serviço, preservado como build estático de React.</strong></p>
-  <p><img alt="React" src="https://img.shields.io/badge/React-Compila%C3%A7%C3%A3o%20hist%C3%B3rica-149ECA?logo=react&logoColor=white"> <img alt="Status" src="https://img.shields.io/badge/status-build%20legado-64748b"></p>
-</div>
+# Office Ordem — Modernização para GitHub Pages
 
-## O que está disponível?
+Painel de ordens de serviço funcional em HTML, CSS e JavaScript, **sem banco de dados ou servidor**.
 
-Este repositório contém **arquivos já compilados** de uma aplicação criada com React. A estrutura inclui `index.html`, `asset-manifest.json`, arquivos em `static/` e ícones.
+- Criar, editar e excluir serviços; acompanhar status, prioridade, valor e prazo.
+- Pesquisar, filtrar, consultar indicadores e exportar CSV/JSON.
+- Importar backups JSON validados e restaurar dados fictícios.
+- Armazenamento somente no localStorage deste navegador.
+- Navegação responsiva, teclado, foco visível, movimento reduzido e feedback acessível.
 
-**O código-fonte React original, os componentes editáveis e o `package.json` não estão presentes nesta versão.** Portanto, `npm install` e `npm run dev` **não são etapas suportadas aqui**.
+**Aviso:** sistema demonstrativo local. Não há login, contas reais nem sincronização. Evite dados pessoais reais em computadores compartilhados.
 
-## Como visualizar
+## Testar localmente
+Use python -m http.server 8000 na raiz do repositório e abra http://localhost:8000/.
 
-Baixe ou clone o repositório e sirva sua raiz por HTTP:
+## GitHub Pages
+Após integração na branch main, selecione Settings > Pages > Source: GitHub Actions. A publicação roda testes em Node, captura telas com Playwright e publica o site em https://helioconde.github.io/Office-Ordem/.
 
-```bash
-git clone https://github.com/HelioConde/Office-Ordem.git
-cd Office-Ordem
-python -m http.server 8000
-```
+## Preservação histórica
+A compilação React original ainda está em static/. Pode ser vista em legacy.html, com envio de formulário bloqueado. O código-fonte antigo não foi recuperado; o formulário original apontava para localhost e não funciona no GitHub Pages.
 
-Abra `http://localhost:8000`. O build utiliza caminhos absolutos começando por `/static/`; por isso, deve ser servido **na raiz do domínio**, não necessariamente em uma subpasta do GitHub Pages.
-
-**Compatibilidade e fluxos de ordens de serviço não foram testados nesta revisão**; a presença dos arquivos compilados não comprova funcionamento completo do sistema.
-
-## Organização
-
-| Arquivo | Finalidade |
-| --- | --- |
-| `index.html` | Entrada da aplicação |
-| `static/js/` | JavaScript compilado/minificado |
-| `static/css/` | Estilos compilados |
-| `asset-manifest.json` | Relação dos arquivos produzidos pelo build |
-| `manifest.json` / ícones | Metadados e recursos estáticos |
-
-A compilação ainda utiliza título e descrição **padrão de Create React App**, que precisam ser corrigidos se o projeto for retomado.
-
-## Recuperar o projeto para desenvolvimento
-
-1. Localizar o repositório ou backup contendo o código-fonte React original.
-2. Se ele não existir, reconstruir os componentes em um novo projeto.
-3. Documentar os fluxos reais de ordens de serviço após validação.
-4. Criar um build reproduzível, com testes de formulários e impressão.
-5. Auditar qualquer dado pessoal ou configuração embutida no bundle legado.
-
-**Status:** registro histórico — não homologado para uso comercial.
-
-Desenvolvido por [Hélio Conde](https://github.com/HelioConde).
+Consulte docs/DESIGN_SYSTEM.md e docs/PAGES.md para arquitetura, limites e plano de QA.

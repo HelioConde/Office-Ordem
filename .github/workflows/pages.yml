@@ -1,0 +1,65 @@
+name: Office Ordem - Quality and GitHub Pages
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: office-ordem-pages
+  cancel-in-progress: false
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Node smoke tests
+        run: |
+          node --check assets/app.js
+          node --test tests/smoke.test.cjs
+      - name: Create route-prefix preview
+        run: |
+          mkdir -p preview/Office-Ordem
+          cp index.html favicon.ico preview/Office-Ordem/
+          cp -R assets preview/Office-Ordem/
+      - name: Playwright visual QA
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+          node tests/visual.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: office-ordem-screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+      - name: Prepare public site
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p publish
+          cp index.html legacy.html favicon.ico logo192.png logo512.png manifest.json publish/
+          cp -R assets static img publish/
+          touch publish/.nojekyll
+      - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          path: publish
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: qa
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
