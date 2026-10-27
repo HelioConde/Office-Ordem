@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f8fc">
+  <meta name="description" content="Office Ordem: demonstração de gerenciamento de ordens de serviço, totalmente local e sem banco de dados.">
+  <title>Office Ordem — Painel de serviços</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#principal">Pular para conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Office Ordem, voltar ao início">
+      <span class="brand-mark" aria-hidden="true">OO</span>
+      <span><strong>Office Ordem</strong><small>Painel de serviços</small></span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a href="#visao-geral">Visão geral</a>
+      <a href="#ordens">Ordens</a>
+    </nav>
+    <span class="demo-indicator"><span class="status-dot" aria-hidden="true"></span> Demonstração local</span>
+  </header>
+  <main id="principal" class="container">
+    <section class="hero" id="visao-geral" aria-labelledby="page-title">
+      <div>
+        <span class="eyebrow">GESTÃO SIMPLES E ORGANIZADA</span>
+        <h1 id="page-title">Todas as ordens.<br><span>No seu controle.</span></h1>
+        <p>Organize solicitações, acompanhe prazos e atualize o andamento dos serviços — diretamente neste navegador.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" type="button" id="newOrderHero">+ Nova ordem</button>
+          <a class="button button-secondary" href="#ordens">Consultar ordens</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-topline"><span class="art-dots">● ● ●</span><span>Resumo de atividades</span></div>
+        <div class="art-bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="art-status"><span class="art-icon">✓</span><div><strong>Fluxo organizado</strong><small>Da entrada à conclusão</small></div></div>
+      </div>
+    </section>
+    <section class="metric-section" aria-label="Indicadores de ordens">
+      <article class="metric"><div class="metric-heading"><span>Total de ordens</span><span aria-hidden="true">▤</span></div><strong id="statTotal">0</strong><small>Registradas neste navegador</small></article>
+      <article class="metric"><div class="metric-heading"><span>Em aberto</span><span class="metric-icon pending" aria-hidden="true">◷</span></div><strong id="statOpen">0</strong><small>Aguardando atendimento</small></article>
+      <article class="metric"><div class="metric-heading"><span>Em andamento</span><span class="metric-icon progress" aria-hidden="true">↗</span></div><strong id="statProgress">0</strong><small>Serviços em execução</small></article>
+      <article class="metric"><div class="metric-heading"><span>Concluídas</span><span class="metric-icon done" aria-hidden="true">✓</span></div><strong id="statDone">0</strong><small>Atendimentos finalizados</small></article>
+    </section>
+    <section class="orders-section" id="ordens" aria-labelledby="orders-heading">
+      <div class="section-heading">
+        <div><span class="eyebrow">ACOMPANHAMENTO</span><h2 id="orders-heading">Ordens de serviço</h2><p>Pesquise, filtre ou altere o status das solicitações.</p></div>
+        <button class="button button-primary" type="button" id="newOrder">+ Nova ordem</button>
+      </div>
+      <div class="toolbar">
+        <label class="search-field"><span class="sr-only">Pesquisar ordens por cliente ou serviço</span><span aria-hidden="true">⌕</span><input id="search" type="search" autocomplete="off" placeholder="Buscar por cliente ou serviço..."></label>
+        <label class="filter-field"><span class="sr-only">Filtrar por status</span><select id="filterStatus"><option value="all">Todos os status</option><option value="aberta">Em aberto</option><option value="andamento">Em andamento</option><option value="concluida">Concluídas</option></select></label>
+        <button class="button button-secondary" type="button" id="exportOrders">Exportar JSON</button>
+      </div>
+      <div class="table-scroll">
+        <table class="orders-table">
+          <thead><tr><th scope="col">Ordem / Serviço</th><th scope="col">Cliente</th><th scope="col">Prioridade</th><th scope="col">Status</th><th scope="col">Ações</th></tr></thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState" hidden>
+        <span aria-hidden="true">▤</span>
+        <h3>Nenhuma ordem encontrada</h3>
+        <p>Experimente outra busca ou crie uma nova ordem de serviço.</p>
+        <button type="button" class="button button-secondary" id="clearFilters">Limpar filtros</button>
+      </div>
+      <div class="table-footer"><span id="resultCount">0 ordens</span><button class="text-button" type="button" id="resetDemo">Restaurar exemplos</button></div>
+    </section>
+    <aside class="disclaimer" aria-label="Sobre esta versão">
+      <strong>Demonstração offline e sem banco de dados.</strong> Os exemplos são fictícios. As alterações permanecem apenas neste navegador (localStorage); o arquivo JSON exportado serve como cópia manual. Não use informações pessoais reais nesta versão de demonstração.
+    </aside>
+  </main>
+  <dialog id="orderDialog" class="order-dialog" aria-labelledby="dialogTitle">
+    <form id="orderForm" method="dialog" novalidate>
+      <div class="dialog-header"><div><span class="eyebrow">CADASTRO LOCAL</span><h2 id="dialogTitle">Nova ordem de serviço</h2></div><button type="button" id="closeDialog" class="icon-button" aria-label="Fechar janela">×</button></div>
+      <div class="dialog-fields">
+        <label for="client">Cliente <span aria-hidden="true">*</span><input id="client" name="client" maxlength="70" autocomplete="off" required placeholder="Nome ou identificação fictícia"></label>
+        <label for="service">Serviço <span aria-hidden="true">*</span><input id="service" name="service" maxlength="90" required placeholder="Descrição do atendimento"></label>
+        <label for="priority">Prioridade<select id="priority" name="priority"><option value="normal">Normal</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></label>
+        <label for="notes">Observações (opcional)<textarea id="notes" name="notes" maxlength="300" rows="3" placeholder="Detalhes do serviço"></textarea></label>
+      </div>
+      <p id="formError" class="form-error" role="alert" hidden>Preencha cliente e serviço antes de salvar.</p>
+      <div class="dialog-actions"><button type="button" class="button button-secondary" id="cancelDialog">Cancelar</button><button type="submit" class="button button-primary">Salvar ordem</button></div>
+    </form>
+  </dialog>
+  <div id="notification" class="notification" role="status" aria-live="polite"></div>
+  <footer class="footer"><span>Office Ordem · Projeto demonstrativo, sem login e sem servidor.</span><a href="https://github.com/HelioConde/Office-Ordem" rel="noopener noreferrer" target="_blank">Código no GitHub</a></footer>
+</body>
+</html>
