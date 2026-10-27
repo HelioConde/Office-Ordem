@@ -2,6 +2,8 @@ name: Office Ordem - Static Pages e QA
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -37,6 +39,7 @@ jobs:
           path: screenshots/
           if-no-files-found: ignore
   deploy:
+    if: github.event_name != 'pull_request'
     needs: qa
     runs-on: ubuntu-latest
     environment:
