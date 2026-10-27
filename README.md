@@ -1,49 +1,22 @@
-<div align="center">
-  <h1>🧾 Office Ordem</h1>
-  <p><strong>Experimento de interface para ordens de serviço, preservado como build estático de React.</strong></p>
-  <p><img alt="React" src="https://img.shields.io/badge/React-Compila%C3%A7%C3%A3o%20hist%C3%B3rica-149ECA?logo=react&logoColor=white"> <img alt="Status" src="https://img.shields.io/badge/status-build%20legado-64748b"></p>
-</div>
+# Office Ordem — demonstração estática moderna
 
-## O que está disponível?
+Projeto de gestão de ordens de serviço com dashboard, busca, filtros por status, criação, edição, exclusão confirmada, indicadores e exportação JSON.
 
-Este repositório contém **arquivos já compilados** de uma aplicação criada com React. A estrutura inclui `index.html`, `asset-manifest.json`, arquivos em `static/` e ícones.
+## Como funciona
+- **Sem servidor, PHP ou banco de dados.** Tudo ocorre no navegador por meio do `localStorage`.
+- Três ordens de exemplo fictícias ao primeiro acesso.
+- Persistência só no mesmo dispositivo/navegador. Não há contas, sincronização nem recuperação automática.
+- Use **somente dados fictícios**. Não há salvaguardas de aplicação profissional para dados de clientes.
 
-**O código-fonte React original, os componentes editáveis e o `package.json` não estão presentes nesta versão.** Portanto, `npm install` e `npm run dev` **não são etapas suportadas aqui**.
+## Execução
+Sirva a raiz por HTTP: `python -m http.server 8000` e abra http://localhost:8000.
 
-## Como visualizar
+## GitHub Pages
+Workflow: `.github/workflows/pages.yml`; publica apenas o conjunto estático permitido depois de validar JS e auditoria visual.
+Configuração: Settings → Pages → Build and deployment → Source: **GitHub Actions**.
+Endereço esperado: https://helioconde.github.io/Office-Ordem/
 
-Baixe ou clone o repositório e sirva sua raiz por HTTP:
+## Preservação do antigo
+O repositório continha somente um build antigo React/Create React App, sem o código-fonte original. Os artefatos `static/`, `asset-manifest.json`, `manifest.json` e demais arquivos seguem versionados; o `index.html` original é recuperável pelo histórico anterior à migração. A nova UI é uma **demonstração independente**, não um sistema comercial nem recuperação integral do app antigo.
 
-```bash
-git clone https://github.com/HelioConde/Office-Ordem.git
-cd Office-Ordem
-python -m http.server 8000
-```
-
-Abra `http://localhost:8000`. O build utiliza caminhos absolutos começando por `/static/`; por isso, deve ser servido **na raiz do domínio**, não necessariamente em uma subpasta do GitHub Pages.
-
-**Compatibilidade e fluxos de ordens de serviço não foram testados nesta revisão**; a presença dos arquivos compilados não comprova funcionamento completo do sistema.
-
-## Organização
-
-| Arquivo | Finalidade |
-| --- | --- |
-| `index.html` | Entrada da aplicação |
-| `static/js/` | JavaScript compilado/minificado |
-| `static/css/` | Estilos compilados |
-| `asset-manifest.json` | Relação dos arquivos produzidos pelo build |
-| `manifest.json` / ícones | Metadados e recursos estáticos |
-
-A compilação ainda utiliza título e descrição **padrão de Create React App**, que precisam ser corrigidos se o projeto for retomado.
-
-## Recuperar o projeto para desenvolvimento
-
-1. Localizar o repositório ou backup contendo o código-fonte React original.
-2. Se ele não existir, reconstruir os componentes em um novo projeto.
-3. Documentar os fluxos reais de ordens de serviço após validação.
-4. Criar um build reproduzível, com testes de formulários e impressão.
-5. Auditar qualquer dado pessoal ou configuração embutida no bundle legado.
-
-**Status:** registro histórico — não homologado para uso comercial.
-
-Desenvolvido por [Hélio Conde](https://github.com/HelioConde).
+Design e decisões em [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
