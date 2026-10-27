@@ -11,11 +11,8 @@ concurrency:
   group: office-ordem-pages
   cancel-in-progress: false
 jobs:
-  deploy:
+  qa:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,6 +35,18 @@ jobs:
           name: office-ordem-screenshots
           path: screenshots/
           if-no-files-found: ignore
+  deploy:
+    needs: qa
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Montar arquivos publicados
+        run: |
+          mkdir -p dist-pages
+          cp site/index.html site/style.css site/app.js site/favicon.svg dist-pages/
       - uses: actions/configure-pages@v5
         with:
           enablement: true
