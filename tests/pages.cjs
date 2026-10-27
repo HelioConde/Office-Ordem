@@ -46,6 +46,8 @@ const server=spawn('python3',['-m','http.server','8733','--bind','127.0.0.1','--
    await edited.getByRole('button',{name:/Excluir ordem/}).click();
    assert.equal(await edited.count(),0,width+': exclusão falhou');
    await page.locator('#import').setInputFiles({name:'backup-invalido.json',mimeType:'application/json',buffer:Buffer.from('{"unexpected":true}')});
+   // File.text() é assíncrono: aguardar o feedback antes de verificar o resultado.
+   await page.waitForFunction(()=>document.querySelector('#alert')?.textContent?.includes('incompatível'),{timeout:5000});
    assert.match(await page.locator('#alert').innerText(),/incompatível/i,width+': importação inválida não bloqueada');
    await page.close();
   }
