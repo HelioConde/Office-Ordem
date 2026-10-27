@@ -25,3 +25,6 @@ Botões secundários para exportação CSV e importação JSON validada; foco vi
 - Edição, atualização de status, busca, filtros, exclusão confirmada, exportação CSV e rejeição de backup JSON inválido.
 - Persistência local após recarregar, console sem erros e viewport sem overflow em 320/390/768/1024/1366/1600.
 - CSS: tokens de raio e foco, alvos de toque responsivos e etiquetas de status legíveis.
+
+## Segurança da persistência no modo Pages
+O estado restaurado de localStorage é revalidado com o mesmo esquema do importador JSON, limite de 500 linhas e verificação de IDs únicos. Registros inválidos são descartados em favor dos exemplos fictícios. O QA valida importação de backup válido, persistência após reload e recuperação de dados malformados, além do CRUD e CSV existentes.
