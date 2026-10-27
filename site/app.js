@@ -16,4 +16,28 @@ q("#search").addEventListener("input",render);q("#filter").addEventListener("cha
 function printOrder(record){const safe=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const view=window.open("","_blank","width=850,height=700");if(!view){alert("Permita a abertura da janela para imprimir.");return}view.opener=null;view.document.write("<!doctype html><html lang='pt-BR'><head><meta charset='utf-8'><title>OS "+record.id+"</title><style>body{font:16px Arial;padding:40px;line-height:1.7}h1{border-bottom:2px solid #222}dt{font-weight:bold}dd{margin:0 0 15px}</style></head><body><h1>Office Ordem • OS #"+safe(record.id)+"</h1><dl><dt>Cliente fictício</dt><dd>"+safe(record.client)+"</dd><dt>Equipamento</dt><dd>"+safe(record.device)+"</dd><dt>Serviço</dt><dd>"+safe(record.service)+"</dd><dt>Status</dt><dd>"+safe(record.status)+"</dd><dt>Valor estimado</dt><dd>"+safe(money(record.price))+"</dd></dl><p>Documento demonstrativo • Sem validade comercial</p></body></html>");view.document.close();view.focus();view.print()}
 q("#export").addEventListener("click",()=>{const obj=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));const a=make("a");a.href=obj;a.download="office-ordem-demo.json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(obj),1000);alert("Exportação JSON gerada.")});
 q("#reset").addEventListener("click",()=>{if(!confirm("Restaurar os exemplos e apagar suas alterações locais?"))return;data=sample();save();render();alert("Demonstração restaurada.")});render();
+
+function csvSafe(value){let v=String(value);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replaceAll('"','""')+'"';}
+function makeDownload(filename,type,body){const link=make("a");const url=URL.createObjectURL(new Blob([body],{type}));link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+q("#export-csv").addEventListener("click",()=>{
+  const columns=["id","client","device","service","price","status","date"];
+  const rows=[columns.map(csvSafe).join(";"),...data.map(row=>columns.map(c=>csvSafe(row[c]??"")).join(";"))];
+  makeDownload("office-ordem-demo.csv","text/csv;charset=utf-8","\ufeff"+rows.join("\r\n"));
+  alert("Planilha CSV gerada neste navegador.");
+});
+function validBackupItem(item){return !!item&&typeof item==="object"&&!Array.isArray(item)&&Number.isSafeInteger(item.id)&&item.id>=0&&typeof item.client==="string"&&item.client.trim().length>0&&item.client.length<=70&&typeof item.device==="string"&&item.device.trim().length>0&&item.device.length<=70&&typeof item.service==="string"&&item.service.trim().length>0&&item.service.length<=350&&typeof item.price==="number"&&Number.isFinite(item.price)&&item.price>=0&&item.price<=999999&&statuses.includes(item.status)&&typeof item.date==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(item.date);}
+q("#import").addEventListener("change",async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ try{
+   if(file.size>1024*1024)throw Error("O backup deve ter no máximo 1 MB.");
+   const parsed=JSON.parse(await file.text());
+   if(!Array.isArray(parsed)||parsed.length>500||!parsed.every(validBackupItem)||new Set(parsed.map(item=>item.id)).size!==parsed.length)throw Error("Formato do backup incompatível.");
+   if(confirm("Substituir todas as ordens atuais pelos "+parsed.length+" registros do backup?")){
+     data=parsed.map(o=>({id:o.id,client:o.client,device:o.device,service:o.service,price:o.price,status:o.status,date:o.date}));
+     save();render();alert("Backup JSON importado.");
+   }
+ }catch(error){alert(error.message||"Erro ao importar backup.");}
+ finally{event.target.value="";}
+});
+
 })();

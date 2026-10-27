@@ -17,3 +17,5 @@ Deploy automático somente dos arquivos site/*; usa localStorage, sem backend. N
 
 ## Playwright
 Testa CRUD, persistência após reload, responsividade e ausência de overflow em 390/768/1366/1600px.
+## Refinamento de QA e dados
+Botões secundários para exportação CSV e importação JSON validada; foco visível no seletor de arquivo, mensagens acessíveis no painel, sem dependências externas. Registros inseridos por APIs de texto do DOM para evitar execução de HTML fornecido pelo usuário.
