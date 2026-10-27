@@ -61,11 +61,11 @@ async function run() {
       if (await page.getByText('Teste ficticio ' + width).count()) throw new Error('Exclusao falhou ' + width)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)
       if (overflow > 2) throw new Error('Overflow horizontal em ' + width + ': ' + overflow)
-      const focusStyle = await page.locator('#new').evaluate((el) => {
-        el.focus()
-        return getComputedStyle(el).outlineStyle
-      })
-      if (focusStyle === 'none') errors.push(width + ': foco do botao nao visivel')
+      await page.reload()
+      await page.keyboard.press('Tab')
+      const skipLink = page.locator('.skip')
+      const keyboardFocus = await skipLink.evaluate((el) => el === document.activeElement && getComputedStyle(el).outlineStyle !== 'none')
+      if (!keyboardFocus) errors.push(width + ': foco do link de acesso rapido nao visivel')
       results.push({ width, create: true, edit: true, delete: true, localStorage: true, overflow })
       await page.close()
     }

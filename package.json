@@ -1,0 +1,9 @@
+{
+  "name": "office-ordem-static-demo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "QA para demonstracao Office Ordem sem servidor ou banco",
+  "scripts": {
+    "test:e2e": "node tests/pages.cjs"
+  }
+}
