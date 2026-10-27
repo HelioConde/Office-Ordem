@@ -1,0 +1,11 @@
+{
+  "name": "office-ordem-pages",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "qa": "node tests/smoke.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  }
+}
